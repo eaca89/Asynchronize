@@ -1,24 +1,21 @@
-import requests
-from requests import Response
 import asyncio
-from asyncio import Task
 
-async def fetch_status(url: str) -> dict:
-    print(f'Fetching status for: {url}')
-    response: Response = await asyncio.to_thread(requests.get, url, None)
-    print('Done!')
-    return {'status': response.status_code, 'url': url}
+#  Define a coroutine that simulates a time-consuming task
+async def fetch_data(delay):
+    print("Fetching data ... ")
+    await asyncio.sleep(delay) # Simulate an I/0 operation with a sleep
+    print("Data fetched")
+    return {"data": "Some data"} # Return some data
 
 
-async def main() -> None:
-    apple_task: Task[dict] = asyncio.create_task(fetch_status('https://apple.com'))
-    google_task: Task[dict] = asyncio.create_task(fetch_status('https://google.com'))
-    
-    apple_status: dict = await apple_task
-    google_status: dict = await google_task
+# Define another coroutine that calls the first coroutine
+async def main():
+    print("Start of main coroutine")
+    task = fetch_data(2)
+    # Await the fetch_data coroutine, pausing execution of main until fetch_data completes
+    result = await task
+    print(f"Received result: {result}")
+    print("End of main coroutine")
 
-    print(apple_status)
-    print(google_status)
-
-if __name__ == "__main__":
-    asyncio.run(main=main())
+# Run the main coroutine
+asyncio.run(main())

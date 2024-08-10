@@ -17,15 +17,4 @@ async def main():
     
     print(result1, result2, result3, sep="\n")
 
-async def main():
-    # Run coroutines concurrently and gather their return values
-    results = await asyncio.gather(fetch_data(1, 2),
-                                   fetch_data(2, 1),
-                                   fetch_data(3, 3)
-                                )
-
-    # Process the results
-    for result in results:
-        print(f"Received result: {result}")
-
 asyncio.run(main())

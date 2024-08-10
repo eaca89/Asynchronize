@@ -1,22 +1,23 @@
 import asyncio
 
-# A shared variable
-shared_resource = 0
+async def fetch_data(id, sleep_time):
+    print(f"Coroutine {id} starting to fetch data.")
+    await asyncio.sleep(sleep_time)
+    return {"id": id, "data": f"Sample data from coroutine {id}"}
 
-# An asyncio Lock
-lock = asyncio.Lock()
-
-async def modify_shared_resource():
-    global shared_resource
-    async with lock:
-        # Critical section starts
-        print(f"Resource before modification: {shared_resource}")
-        shared_resource += 1 # Modify the shared resource
-        await asyncio.sleep(1) # Simulate an IO operation
-        print(f"Resource after modification: {shared_resource}")
-        # Critical section ends
 
 async def main():
-    await asyncio.gather(*(modify_shared_resource() for _ in range(5)))1
+    tasks = []
+    async with asyncio.TaskGroup() as tg:
+        for i, sleep_time in enumerate([2, 1, 3], start=1):
+            task = tg.create_task(fetch_data(i, sleep_time))
+            tasks.append(task)
+
+    # After the Task Group block, all tasks have completed
+    results = [task.result() for task in tasks]
+
+    for result in results:
+        print(f"Received result: {result}")
+
 
 asyncio.run(main())

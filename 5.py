@@ -7,17 +7,14 @@ async def fetch_data(id, sleep_time):
 
 
 async def main():
-    tasks = []
-    async with asyncio.TaskGroup() as tg:
-        for i, sleep_time in enumerate([2, 1, 3], start=1):
-            task = tg.create_task(fetch_data(i, sleep_time))
-            tasks.append(task)
+    # Run coroutines concurrently and gather their return values
+    results = await asyncio.gather(fetch_data(1, 2),
+                                   fetch_data(2, 1),
+                                   fetch_data(3, 3)
+                                )
 
-    # After the Task Group block, all tasks have completed
-    results = [task.result() for task in tasks]
-
+    # Process the results
     for result in results:
         print(f"Received result: {result}")
-
 
 asyncio.run(main())
